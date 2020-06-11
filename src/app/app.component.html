@@ -1,0 +1,20 @@
+<div class="header">
+  <div><span id="worldname"> {{world.name}} </span></div>
+  <div><!--img [attr.src]="server+world.logo" /> </span>--></div> 
+  <div><span [innerHTML]="world.money | bigvalue"> </span></div>
+  <div>Multiplicateur</div> 
+  <div> ID du joueur </div>
+</div>
+
+<div class="main">
+  <div> liste des boutons de menu </div> 
+  <div class="product">
+    <div><span> <img [attr.src]="server+world.logo" /> </span></div> 
+    <div> <!--img [attr.src]="server+world.logo" /> </span>--> </div> 
+    <div> <!--img [attr.src]="server+world.logo" /> </span>--> </div> 
+    <div> <!--img [attr.src]="server+world.logo" /> </span>--> </div> 
+    <div> <!--img [attr.src]="server+world.logo" /> </span>--> </div> 
+    <div> <!--img [attr.src]="server+world.logo" /> </span>--> </div>
+  </div>
+</div>
+<router-outlet></router-outlet>
