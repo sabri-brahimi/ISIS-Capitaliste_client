@@ -1,12 +1,40 @@
 .header {
     display: grid;
-    grid-template-columns: 25% 25% 30% 20%; 
+    grid-template-columns: 25% 25% 30% 20%;
 }
 .main {
     display: grid;
-    grid-template-columns: 20% 80%; 
+    grid-template-columns: 20% 80%;
 }
-.product { 
+.product {
     display: grid;
-    grid-template-columns: 1fr 1fr; 
+    grid-template-columns: 1fr 1fr;
 }
+
+.round { 
+    width: 100px; 
+    height: 100px; 
+    border-radius: 50% 
+}
+
+.lesdeux {
+    position: relative; 
+}
+
+.lesecond { 
+    position: absolute; 
+    bottom: -10px; 
+}
+
+.modal {
+    position: fixed;
+    z-index: 2; 
+    width: 800px;
+    height: 800px; 
+    overflow: auto; 
+    background-color: white; 
+    border: solid;
+    top:10; 
+    left:20%; 
+}
+   

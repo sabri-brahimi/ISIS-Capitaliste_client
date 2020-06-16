@@ -1,1 +1,15 @@
- <app-product [prod]="world.products.product[0]" class="product col-md-6">{{this.product}}</app-product>
+<div class="product">
+    <div class="icone">
+        <span class="name">{{product.name}}</span>
+        <img [attr.src]="server+product.logo" (click)="startProduction()" />
+        <p class="quantities">{{product.quantite}}</p>
+    </div>
+    <div class="cout">
+        <span>{{product.cout}}</span>
+    </div>
+    <div class="time">
+        <span>{{product.vitesse}}</span>
+        <span>{{product.timeleft}}</span>
+    </div>
+    <mat-progress-bar class="progressbar" [value]="progressbarvalue"></mat-progress-bar>
+</div>

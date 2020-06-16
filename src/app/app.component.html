@@ -1,20 +1,84 @@
 <div class="header">
-  <div><span id="worldname"> {{world.name}} </span></div>
-  <div><!--img [attr.src]="server+world.logo" /> </span>--></div> 
-  <div><span [innerHTML]="world.money | bigvalue"> </span></div>
-  <div>Multiplicateur</div> 
-  <div> ID du joueur </div>
+  <img [attr.src]="server+world.logo" />
+  <span id="worldname"> {{world.name}} </span>
+  <span [innerHTML]="world.money | bigvalue"> </span> 
+  <div> multiplicateur </div>
+  <input type="text" [(ngModel)]="username" (change)="onUsernameChanged()"/>
 </div>
 
+<nav>
+  <div class="menu-item" data-toggle="modal" (click)="unlocksModal.show()">Unlocks</div>
+</nav>
+
 <div class="main">
-  <div> liste des boutons de menu </div> 
-  <div class="product">
-    <div><span> <img [attr.src]="server+world.logo" /> </span></div> 
-    <div> <!--img [attr.src]="server+world.logo" /> </span>--> </div> 
-    <div> <!--img [attr.src]="server+world.logo" /> </span>--> </div> 
-    <div> <!--img [attr.src]="server+world.logo" /> </span>--> </div> 
-    <div> <!--img [attr.src]="server+world.logo" /> </span>--> </div> 
-    <div> <!--img [attr.src]="server+world.logo" /> </span>--> </div>
-  </div>
+  <mat-sidenav-container>
+    <mat-sidenav mode="side" opened>
+      <button mat-raised-button color="primary" [matBadge]="badgeManagers" [matBadgeHidden]="badgeManagers==0" (click)="showManagers = !showManagers">Managers</button>    
+    </mat-sidenav>
+    <mat-sidenav-content class="main">
+      <div class="product" *ngFor="let product of world.products.product">
+        <app-product [prod]="product" [qtmulti]="this.qtmulti" [money]="world.money" (notifyProduction)="onProductionDone($event)" (notifyBuy)="onBuyDone($event)"></app-product>
+      </div> 
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>
-<router-outlet></router-outlet>
+
+<div *ngIf="showManagers" class="modal">
+  <div>
+    <h1 class="title">Managers make you feel better !</h1>
+  </div>
+  <div>
+  <div *ngFor="let manager of world.managers.pallier">
+    <div *ngIf="!manager.unlocked" class="managerslayout">
+      <div>
+        <div class="logo"><img class="round" [attr.src]="server+manager.logo" /> </div>
+      </div>
+      <div>
+        <div class="managername"> {{ manager.name}} </div>
+        <div class="managercible"> {{ world.products.product[manager.idcible-1].name }} </div>
+        <div class="managercost"> {{ manager.seuil}} </div>
+      </div>
+      <div>
+        <button mat-button class="hirebutton" (click)="hireManager(manager)"
+          [ngClass]="{'selectable' : (world.money >= manager.seuil)}">Hire !
+        </button>
+      </div>
+    </div>
+  </div>
+  <button class="closebutton" mat-raisedbutton color="primary" (click)="showManagers = !showManagers">Close</button>
+</div>
+
+<app-modal #unlocksModal>
+  <div class="app-modal-header">
+    <h4 class="modal-title">Unlocks make you feel better !</h4>
+  </div>
+  <div class="app-modal-body">
+    <div class="centerBlock">
+      <div class="row">
+        <div *ngFor="let product of world.products.product" class="col-6">
+          <div
+            *ngFor="let unlock of product.palliers.pallier"
+            class="row"
+            id="ManagerCell"
+          >
+            <div class="col-md-4 text-center">
+              <img
+                [attr.src]="server + '/icones/' + unlock.logo"
+                class="round"
+              />
+            </div>
+            <div class="col-md-8">
+              {{ unlock.seuil }}
+            </div>
+          </div>
+          <div class="ManagerName">Unlock {{ product.name }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="app-modal-footer">
+    <button type="button" class="CloseButton" (click)="unlocksModal.hide()">
+      Close
+    </button>
+  </div>
+</app-modal>
