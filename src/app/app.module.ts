@@ -15,14 +15,12 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
-import { ModalComponent } from './modal/modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProductComponent,
-    BigvaluePipe,
-    ModalComponent
+    BigvaluePipe
   ],
   imports: [
     BrowserModule,

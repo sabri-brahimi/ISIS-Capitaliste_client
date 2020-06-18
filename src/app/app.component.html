@@ -7,7 +7,13 @@
 </div>
 
 <nav>
-  <div class="menu-item" data-toggle="modal" (click)="unlocksModal.show()">Unlocks</div>
+  <nav>
+    <div class="menu-item"><button class="menu-button" mat-raised-button color="primary" [matBadge]="badgeManagers"
+        [matBadgeHidden]="badgeManagers==0" (click)="showManagers=!showManagers">Managers</button></div>
+    <div class="menu-item"><button class="menu-button" mat-raised-button color="primary"
+        (click)="showUnlocks=!showUnlocks">Débloquer</button></div>
+        <div class="menu-item"><button class="menu-button" mat-raised-button color="primary"
+          (click)="showUpgrade=!showUpgrade">Cash Upgrades</button></div>
 </nav>
 
 <div class="main">
@@ -25,9 +31,8 @@
 
 <div *ngIf="showManagers" class="modal">
   <div>
-    <h1 class="title">Managers make you feel better !</h1>
+    <h1 class="title">Engager des manager</h1>
   </div>
-  <div>
   <div *ngFor="let manager of world.managers.pallier">
     <div *ngIf="!manager.unlocked" class="managerslayout">
       <div>
@@ -45,40 +50,46 @@
       </div>
     </div>
   </div>
-  <button class="closebutton" mat-raisedbutton color="primary" (click)="showManagers = !showManagers">Close</button>
+  <button class="closebutton" mat-raisedbutton color="primary" (click)="showManagers = !showManagers">Fermer</button>
 </div>
 
-<app-modal #unlocksModal>
-  <div class="app-modal-header">
-    <h4 class="modal-title">Unlocks make you feel better !</h4>
-  </div>
-  <div class="app-modal-body">
-    <div class="centerBlock">
-      <div class="row">
-        <div *ngFor="let product of world.products.product" class="col-6">
-          <div
-            *ngFor="let unlock of product.palliers.pallier"
-            class="row"
-            id="ManagerCell"
-          >
-            <div class="col-md-4 text-center">
-              <img
-                [attr.src]="server + '/icones/' + unlock.logo"
-                class="round"
-              />
-            </div>
-            <div class="col-md-8">
-              {{ unlock.seuil }}
-            </div>
-          </div>
-          <div class="ManagerName">Unlock {{ product.name }}</div>
+<div class="modal" *ngIf="showUnlocks">
+  <h1>Débloquer le potentiel maximal</h1>
+  <ng-container *ngFor="let product of world.products.product">
+    <ng-container *ngFor="let p of [nextUnlocks(product)];">
+      <div *ngIf="p!=null" class="modal-layout">
+        <div class="logo"><img [attr.src]="server+p.logo"></div>
+        <div class="modal-text">
+          <p>{{ p.name }}</p>
+          <p>{{ product.name }} {{ p.typeratio }} x{{ p.ratio }}</p>
         </div>
       </div>
+    </ng-container>
+  </ng-container>
+    <ng-container *ngFor="let p of [nextUnlocks()];">
+      <div *ngIf="p!=null" class="modal-layout">
+        <div class="logo"><img [attr.src]="server+p.logo"></div>
+        <div class="modal-text">
+          <p>{{ p.name }}</p>
+          <p>L'univers {{ p.typeratio }} x{{ p.ratio }}</p>
+        </div>
+      </div>
+    </ng-container>
+    <button class="close-button" mat-button (click)="showUnlocks=false">Fermer</button>
+</div>
+<div *ngIf="showUpgrade" class="modal">
+  <h1>Amélioration au niveau suivant</h1>
+  <div *ngFor="let upgrade of world.upgrades.pallier">
+    <div *ngIf="!upgrade.unlocked" class="modal-layout">
+      <div class="logo"><img [attr.src]="server+upgrade.logo"></div>
+      <div class="modal-text">
+        <p>{{ upgrade.name}}</p>
+        <p>{{ world.products.product[upgrade.idcible-1].name }}</p>
+        <p>{{ upgrade.seuil }}</p>
+      </div>
+      <button [disabled]="!(world.money>=upgrade.seuil)" (click)="buyUpgrade(upgrade)" mat-raised-button
+        color="primary">Engager</button>
     </div>
   </div>
-  <div class="app-modal-footer">
-    <button type="button" class="CloseButton" (click)="unlocksModal.hide()">
-      Close
-    </button>
-  </div>
-</app-modal>
+  <button class="close-button" mat-button (click)="showUpgrade=false">Fermer</button>
+</div>

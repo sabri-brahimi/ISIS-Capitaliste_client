@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, ViewChildren, QueryList } from '@angular/core';
 import { RestserviceService } from './restservice.service';
 import { World, Product, Pallier } from './world';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ModalComponent } from './modal/modal.component';
+import { ProductComponent } from './product/product.component';
 
 @Component({
   selector: 'app-root',
@@ -20,9 +20,15 @@ export class AppComponent {
   qtmulti_value: string[] = ["x1", "x10", "x100", "Max"];
   qtmulti_pos: number = 0;
 
-  showManagers: boolean = true;
+  showManagers: boolean = false;
+  showUnlocks: boolean = false;
+  showUpgrade: boolean = false;
   badgeManagers: number = 0;
 
+  @ViewChildren(ProductComponent) productComponents: QueryList<
+    ProductComponent
+  >;
+  
   constructor(private service: RestserviceService, private snackbar: MatSnackBar) {
     this.server = service.getServer();
     service.getWorld().then(
@@ -81,5 +87,64 @@ export class AppComponent {
 
   onUsernameChanged(): void {
     this.service.user = this.username;
+  }
+
+  nextUnlocks(product?: Product): Pallier {
+    let pallier: Pallier[];
+    if (product == null) {
+      pallier = this.world.allunlocks.pallier;
+    } else {
+      pallier = product.palliers.pallier;
+    }
+    for (let i = 0; i < pallier.length - 1; i++) {
+      if (!pallier[i].unlocked) {
+        return pallier[i];
+      }
+    }
+    return null;
+  }
+
+  buyUpgrade(upgrade: Pallier): void {
+    if (this.world.money < upgrade.seuil) {
+      return;
+    }
+
+    this.service
+      .putUpgrade(upgrade)
+      .then(() => {
+        upgrade.unlocked = true;
+        let products: Product[];
+        if (upgrade.idcible > 0) {
+          this.productComponents.forEach((p) => {
+            if (p.product.id == upgrade.idcible) products = [p.product];
+          });
+        } else if (upgrade.idcible == 0){
+          products = [];
+          this.productComponents.forEach((p) => {
+            products.push(p.product);
+          });
+        }
+        switch (upgrade.typeratio) {
+          case 'gain':
+            for (let p of products) {
+              p.revenu = p.revenu * upgrade.ratio;
+            }
+            break;
+          case 'vitesse':
+            for (let p of products) {
+              p.vitesse = p.vitesse / upgrade.ratio;
+              p.timeleft = p.timeleft / p.timeleft;
+            }
+            break;
+          case 'ange':
+            break;
+        }
+        this.world.money -= upgrade.seuil;
+      })
+      .catch(() => {
+        this.snackbar.open('An error as occured', '', {
+          duration: 4000,
+        });
+      });
   }
 }
