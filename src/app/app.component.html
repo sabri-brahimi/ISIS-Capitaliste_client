@@ -1,6 +1,6 @@
 <div class="header">
-  <img [attr.src]="server+world.logo" />
-  <span id="worldname"> {{world.name}} </span>
+  <img style="width:50px" [attr.src]="server+world.logo" />
+  <span id="worldname"> {{world.name}}  </span>
   <span [innerHTML]="world.money | bigvalue"> </span> 
   <div> multiplicateur </div>
   <input type="text" [(ngModel)]="username" (change)="onUsernameChanged()"/>
@@ -23,7 +23,7 @@
     </mat-sidenav>
     <mat-sidenav-content class="main">
       <div class="product" *ngFor="let product of world.products.product">
-        <app-product [prod]="product" [qtmulti]="this.qtmulti" [money]="world.money" (notifyProduction)="onProductionDone($event)" (notifyBuy)="onBuyDone($event)"></app-product>
+        <app-product [prod]="product" [server]="server" [qtmulti]="this.qtmulti" [money]="world.money" (notifyProduction)="onProductionDone($event)" (notifyBuy)="onBuyDone($event)"></app-product>
       </div> 
     </mat-sidenav-content>
   </mat-sidenav-container>

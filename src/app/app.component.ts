@@ -30,7 +30,7 @@ export class AppComponent {
   >;
   
   constructor(private service: RestserviceService, private snackbar: MatSnackBar) {
-    this.server = service.getServer();
+    this.server = service.getServerImage();
     service.getWorld().then(
     world => {
     this.world = world;
