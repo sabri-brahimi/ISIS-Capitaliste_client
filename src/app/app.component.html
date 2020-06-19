@@ -1,33 +1,73 @@
-<div class="header">
-  <img style="width:50px" [attr.src]="server+world.logo" />
-  <span id="worldname"> {{world.name}}  </span>
-  <span [innerHTML]="world.money | bigvalue"> </span> 
-  <div> multiplicateur </div>
-  <input type="text" [(ngModel)]="username" (change)="onUsernameChanged()"/>
-</div>
+<mat-toolbar color="primary" class="header">
+  <div>
+      <img style="width:50px" [attr.src]="server+world.logo" />
+      <span id="worldname"> {{world.name}}  </span>
+  </div>
 
-<nav>
-  <nav>
-    <div class="menu-item"><button class="menu-button" mat-raised-button color="primary" [matBadge]="badgeManagers"
-        [matBadgeHidden]="badgeManagers==0" (click)="showManagers=!showManagers">Managers</button></div>
-    <div class="menu-item"><button class="menu-button" mat-raised-button color="primary"
-        (click)="showUnlocks=!showUnlocks">Débloquer</button></div>
-        <div class="menu-item"><button class="menu-button" mat-raised-button color="primary"
-          (click)="showUpgrade=!showUpgrade">Cash Upgrades</button></div>
-</nav>
+  <span [innerHTML]="world.money | bigvalue"></span>
 
-<div class="main">
-  <mat-sidenav-container>
-    <mat-sidenav mode="side" opened>
-      <button mat-raised-button color="primary" [matBadge]="badgeManagers" [matBadgeHidden]="badgeManagers==0" (click)="showManagers = !showManagers">Managers</button>    
-    </mat-sidenav>
-    <mat-sidenav-content class="main">
-      <div class="product" *ngFor="let product of world.products.product">
-        <app-product [prod]="product" [server]="server" [qtmulti]="this.qtmulti" [money]="world.money" (notifyProduction)="onProductionDone($event)" (notifyBuy)="onBuyDone($event)"></app-product>
-      </div> 
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</div>
+  <div>   
+       <button class="menu-button" mat-raised-button >Buy x1</button>
+  </div>
+
+  <mat-form-field class="example-form-field">
+    <mat-label>Utilisateur</mat-label>
+    <input matInput type="text" [(ngModel)]="username" (change)="onUsernameChanged()">
+  </mat-form-field>
+
+</mat-toolbar>
+
+
+<div class="wrapper">
+  
+        <div *ngFor="let product of world.products.product">
+            <app-product [prod]="product" [server]="server" [qtmulti]="this.qtmulti" [money]="world.money" (notifyProduction)="onProductionDone($event)" (notifyBuy)="onBuyDone($event)"></app-product>
+        </div> 
+   
+    <div class="three">
+        <div class="menu-item" style="margin-top:150px">
+            <button class="menu-button" mat-raised-button color="primary"
+              (click)="showUnlocks=!showUnlocks">Unlocks</button>
+            </div>
+      <br>
+      <br>
+
+        <div class="menu-item">
+          <button class="menu-button" mat-raised-button color="primary"
+          (click)="showUpgrade=!showUpgrade">Cash Upgrades</button>
+        </div>
+
+      <br>
+      <br>
+
+        <div class="menu-item">
+          <button class="menu-button" mat-raised-button color="primary" >Angel Upgrades</button>
+        </div>
+
+          <br>
+          <br>
+
+
+      <div class="menu-item">
+        <button class="menu-button" mat-raised-button color="primary" [matBadge]="badgeManagers"
+          [matBadgeHidden]="badgeManagers==0" (click)="showManagers=!showManagers">Managers</button>
+      </div>
+
+      <br>
+      <br>
+
+
+  <div class="menu-item">
+    <button class="menu-button" mat-raised-button color="primary" >Investors</button>
+  </div>
+  
+
+
+        
+    </div>
+  </div>
+
+
 
 <div *ngIf="showManagers" class="modal">
   <div>
@@ -53,6 +93,8 @@
   <button class="closebutton" mat-raisedbutton color="primary" (click)="showManagers = !showManagers">Fermer</button>
 </div>
 
+
+
 <div class="modal" *ngIf="showUnlocks">
   <h1>Débloquer le potentiel maximal</h1>
   <ng-container *ngFor="let product of world.products.product">
@@ -77,6 +119,7 @@
     </ng-container>
     <button class="close-button" mat-button (click)="showUnlocks=false">Fermer</button>
 </div>
+
 <div *ngIf="showUpgrade" class="modal">
   <h1>Amélioration au niveau suivant</h1>
   <div *ngFor="let upgrade of world.upgrades.pallier">

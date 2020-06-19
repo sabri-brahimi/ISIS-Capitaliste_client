@@ -1,0 +1,19 @@
+.round {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%
+   }
+
+   .example-card {
+    max-width: 200px;
+    margin: 0%;
+  }
+
+  .lesecond {
+    position: absolute;
+    bottom: -10px;
+   }
+
+   .lesdeux {
+    position: relative;
+   }

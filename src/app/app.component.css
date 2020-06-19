@@ -37,4 +37,27 @@
     top:10; 
     left:20%; 
 }
+
+.menu-item{
+        margin-left: 10px; 
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+  }
+
+  .two { 
+    grid-column: 3 / 6;
+    grid-row: 3 / 6;
+  }
+  .three {
+      width: 60%;
+    background-color: antiquewhite;
+    grid-column: 1;
+    grid-row: 1 / 5;
+  }
+
    

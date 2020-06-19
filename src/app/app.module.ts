@@ -14,7 +14,12 @@ import { MatProgressBarModule } from '@angular/material/progress-bar'
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatSidenavModule } from '@angular/material/sidenav';
-
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [
@@ -31,7 +36,15 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatSnackBarModule,
     MatBadgeModule,
     MatSidenavModule,
-    FormsModule
+    FormsModule,
+
+    MatToolbarModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    MatGridListModule
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

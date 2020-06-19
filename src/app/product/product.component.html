@@ -1,15 +1,46 @@
+<!-- 
 <div class="product">
+
     <div class="icone">
         <span class="name">{{product.name}}</span>
-        <img [attr.src]="server+product.logo" (click)="startProduction()" />
+        <img [attr.src]="server+product.logo" class="round" (click)="startProduction()" />
         <p class="quantities">{{product.quantite}}</p>
     </div>
+
     <div class="cout">
         <span>{{product.cout}}  </span>
     </div>
+
     <div class="time">
         <span>{{product.vitesse}}</span>
         <span>{{product.timeleft}}</span>
+        <mat-icon aria-hidden="false" aria-label="Example home icon">fa-timer</mat-icon>
     </div>
-    <mat-progress-bar class="progressbar" [value]="progressbarvalue"></mat-progress-bar>
+    
 </div>
+-->
+<mat-card class="example-card">
+        <mat-card-header>
+          <mat-card-title>{{product.name}}</mat-card-title>
+        </mat-card-header>
+
+        <img mat-card-image [attr.src]="server+product.logo" (click)="startProduction()" />
+
+        <mat-card-content>
+
+        <div class="cout">
+            <span>{{product.cout}} $  </span>
+        </div>
+    
+        <div class="time">
+            <span> <mat-icon matSuffix>timer</mat-icon>  {{product.vitesse/1000}} sec </span>  <span>{{product.timeleft}}</span>
+        </div>
+
+        </mat-card-content>
+
+        <mat-card-actions>
+                <button mat-raised-button color="primary" style="margin:12px;width: 85%">Buy x1</button>
+                <p><mat-progress-bar class="progressbar" [value]="progressbarvalue"></mat-progress-bar></p>
+              
+        </mat-card-actions>
+</mat-card>
