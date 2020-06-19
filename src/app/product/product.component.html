@@ -22,6 +22,7 @@
 <mat-card class="example-card">
         <mat-card-header>
           <mat-card-title>{{product.name}}</mat-card-title>
+          <mat-card-subtitle>Quantité:  {{product.quantite}}</mat-card-subtitle>
         </mat-card-header>
 
         <img mat-card-image [attr.src]="server+product.logo" (click)="startProduction()" />
@@ -39,7 +40,8 @@
         </mat-card-content>
 
         <mat-card-actions>
-                <button mat-raised-button color="primary" style="margin:12px;width: 85%">Buy x1</button>
+                <button *ngIf="qteMaxCanBuy != 0" mat-raised-button color="primary" style="margin:12px;width: 85%">Buy x{{qteMaxCanBuy}}</button>
+                <button  *ngIf="qteMaxCanBuy  == 0"  mat-raised-button color="primary" style="margin:12px;width: 85%">Buy {{_qtmulti}}</button>
                 <p><mat-progress-bar class="progressbar" [value]="progressbarvalue"></mat-progress-bar></p>
               
         </mat-card-actions>

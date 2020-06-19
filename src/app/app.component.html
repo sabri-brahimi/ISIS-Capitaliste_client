@@ -7,11 +7,11 @@
   <span [innerHTML]="world.money | bigvalue"></span>
 
   <div>   
-       <button class="menu-button" mat-raised-button >Buy x1</button>
+    <button class="menu-button" (click)="qtmultiClick()" mat-raised-button >Buy {{qtmulti}}</button>
   </div>
 
   <mat-form-field class="example-form-field">
-    <mat-label>Utilisateur</mat-label>
+    <mat-label>Identifiant</mat-label>
     <input matInput type="text" [(ngModel)]="username" (change)="onUsernameChanged()">
   </mat-form-field>
 

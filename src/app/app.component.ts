@@ -3,6 +3,8 @@ import { RestserviceService } from './restservice.service';
 import { World, Product, Pallier } from './world';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProductComponent } from './product/product.component';
+import { log } from 'util';
+
 
 @Component({
   selector: 'app-root',
@@ -30,16 +32,10 @@ export class AppComponent {
   >;
   
   constructor(private service: RestserviceService, private snackbar: MatSnackBar) {
-    this.server = service.getServerImage();
-    service.getWorld().then(
-    world => {
-    this.world = world;
-    });
-
-    this.username = localStorage.getItem('username');
-    if (this.username == null) {
-      this.username = Math.floor(Math.random() * 1000000000).toString();
-      localStorage.setItem('username', this.username);
+  
+   // localStorage.removeItem('username');
+    if (localStorage.getItem('username')) {
+      this.username = localStorage.getItem('username');
     }
     this.onUsernameChanged();
   }
@@ -69,6 +65,7 @@ export class AppComponent {
     if(this.qtmulti_pos == this.qtmulti_value.length){
       this.qtmulti_pos = 0;
     }
+
     this.qtmulti = this.qtmulti_value[this.qtmulti_pos];
   }
 
@@ -86,8 +83,21 @@ export class AppComponent {
   }
 
   onUsernameChanged(): void {
-    this.service.user = this.username;
+    if (this.username) {
+      localStorage.setItem('username', this.username);
+    }
+    this.service.setUser(this.username);
+
+
+    this.server = this.service.getServerImage();
+    this.service.getWorld().then(
+    world => {
+      console.log(this.world)
+    this.world = world;
+    });
+    
   }
+
 
   nextUnlocks(product?: Product): Pallier {
     let pallier: Pallier[];
@@ -124,7 +134,7 @@ export class AppComponent {
             products.push(p.product);
           });
         }
-        switch (upgrade.typeratio) {
+        switch (upgrade.typeratio.toLowerCase()) {
           case 'gain':
             for (let p of products) {
               p.revenu = p.revenu * upgrade.ratio;
@@ -147,4 +157,5 @@ export class AppComponent {
         });
       });
   }
+
 }

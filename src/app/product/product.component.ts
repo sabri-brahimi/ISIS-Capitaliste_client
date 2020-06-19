@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Product, World } from '../world';
+import { RestserviceService } from '../restservice.service';
 
 @Component({
   selector: 'app-product',
@@ -13,6 +14,8 @@ export class ProductComponent implements OnInit {
   lastupdate: number = Date.now();
   world: World = new World();
   progressbar : any;
+  qteMaxCanBuy: number = 0;
+  private service: RestserviceService;
 
   private _server: string;
   private _qtmulti: string;
@@ -28,6 +31,12 @@ export class ProductComponent implements OnInit {
   set qtmulti(value: string) { 
     this._qtmulti = value; 
     if (this._qtmulti && this.product) this.calcMaxCanBuy(); 
+
+    if (this._qtmulti == "Max") {
+      this.qteMaxCanBuy = this.calcMaxCanBuy()
+    }else{
+      this.qteMaxCanBuy = 0
+    }
   } 
 
   @Input() 
@@ -135,7 +144,7 @@ export class ProductComponent implements OnInit {
           this.product.cout = this.product.cout * Math.pow(this.product.croissance, this.calcMaxCanBuy());
         break;
     }
-    // this.service.putProduct(this.product);
+     this.service.putProduct(this.product);
   }
 
   startProduction(){
