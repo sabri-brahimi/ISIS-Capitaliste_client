@@ -34,14 +34,14 @@
         </div>
     
         <div class="time">
-            <span> <mat-icon matSuffix>timer</mat-icon>  {{product.vitesse/1000}} sec </span>  <span>{{product.timeleft}}</span>
+            <span> <mat-icon matSuffix>timer</mat-icon>  {{product.vitesse/1000}} sec </span>  <span *ngIf="product.timeleft  != 0">{{product.timeleft}}</span>
         </div>
 
         </mat-card-content>
 
         <mat-card-actions>
-                <button *ngIf="qteMaxCanBuy != 0" mat-raised-button color="primary" style="margin:12px;width: 85%">Buy x{{qteMaxCanBuy}}</button>
-                <button  *ngIf="qteMaxCanBuy  == 0"  mat-raised-button color="primary" style="margin:12px;width: 85%">Buy {{_qtmulti}}</button>
+                <button *ngIf="_qtmulti == 'Max'" mat-raised-button color="primary" style="margin:12px;width: 85%">Buy x{{qteMaxCanBuy}}</button>
+                <button  *ngIf="_qtmulti  != 'Max' "  mat-raised-button color="primary" style="margin:12px;width: 85%">Buy {{_qtmulti}}</button>
                 <p><mat-progress-bar class="progressbar" [value]="progressbarvalue"></mat-progress-bar></p>
               
         </mat-card-actions>

@@ -49,7 +49,9 @@ export class ProductComponent implements OnInit {
     this.product = value;
     if (this.product && this.product.timeleft > 0) {
       this.lastupdate = Date.now();
-      let progress = (this.product.vitesse - this.product.timeleft) /this.product.vitesse;
+      let progress = ((this.product.vitesse - this.product.timeleft) / this.product.vitesse) * 100;
+      console.log(progress)
+     
       this.progressbar.set(progress);
       this.progressbar.animate(1, { duration: this.product.timeleft });
     }
@@ -76,10 +78,16 @@ export class ProductComponent implements OnInit {
   }
 
   calcScore() {
+   // console.log(" derniere mise à jour "+this.lastupdate)
+   // console.log(" temps restant pour la prod "+this.product.timeleft)
     if(!(this.product.timeleft == 0)) 
     {
+      console.log(" derniere mise à jour on prod "+this.lastupdate)
+      console.log(" maintenant "+Date.now())
       var tempsEcoule = Date.now() - this.lastupdate;
-      if(this.product.timeleft<=0) 
+      console.log(" tempsEcoule "+tempsEcoule)
+     
+      if(this.product.timeleft <= 0) 
       {
         this.product.timeleft = 0;
         this.progressbarvalue = 0;
@@ -91,6 +99,7 @@ export class ProductComponent implements OnInit {
       }
       else {
         this.product.timeleft -= tempsEcoule;
+        console.log(this.product.timeleft)
         this.progressbarvalue = ((this.product.vitesse - this.product.timeleft) / this.product.vitesse) * 100;
       }
     } 
@@ -101,7 +110,7 @@ export class ProductComponent implements OnInit {
     }
 
     // on prévient le composant parent que ce produit a généré son revenu.
-    this.notifyProduction.emit(this.product);
+    //this.notifyProduction.emit(this.product);
 
   }
 
