@@ -21,6 +21,9 @@ export class ProductComponent implements OnInit {
   private _qtmulti: string;
   private _money: number;
 
+  private _activeAngels: number;
+  private _angelBonus: number;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -60,6 +63,29 @@ export class ProductComponent implements OnInit {
   @Input()
   set server(value: string) {
     this._server = value;
+  }
+
+  @Input()
+  set activeAngels(value: number) {
+    this._activeAngels = value
+  }
+
+  get activeAngels(): number {
+    return this._activeAngels;
+  }
+
+  @Input()
+  set angelBonus(value: number) {
+    this._angelBonus = value
+  }
+
+  get angelBonus(): number {
+    return this._angelBonus
+  }
+
+  @Input()
+  set managerUnlocked(value: boolean) {
+    if (value) this.product.managerUnlocked = value;
   }
 
   @Output() 

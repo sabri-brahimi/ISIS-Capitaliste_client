@@ -25,12 +25,24 @@ export class AppComponent {
   showManagers: boolean = false;
   showUnlocks: boolean = false;
   showUpgrade: boolean = false;
+  showAngel: boolean = false;
+  showInvestors: boolean = false;
+
   badgeManagers: number = 0;
+  badgeUpgrades: number = 0;
+  badgeAngels: number = 0;
 
   @ViewChildren(ProductComponent) productComponents: QueryList<
     ProductComponent
   >;
   
+  @HostListener('window:keydown.esc') onKeyDown() {
+    this.showManagers = false;
+    this.showUnlocks = false;
+    this.showUpgrade = false;
+    this.showAngel = false;
+    this.showInvestors = false;
+  }
   constructor(private service: RestserviceService, private snackbar: MatSnackBar) {
   
    // localStorage.removeItem('username');
@@ -38,6 +50,11 @@ export class AppComponent {
       this.username = localStorage.getItem('username');
     }
     this.onUsernameChanged();
+
+    service.getWorld().then((world) => {
+      this.world = world;
+      this.updateBadges();
+    });
   }
 
   ngOnInit(): void {
@@ -45,9 +62,11 @@ export class AppComponent {
   }
 
   onProductionDone(product: Product){
-    this.world.score += product.revenu * product.quantite;
-    this.world.money += product.revenu * product.quantite;
-    this.calcBadgeManager();
+    let prod = product.revenu * product.quantite;
+    prod += prod * ((1 + this.world.activeangels * this.world.angelbonus) / 100);
+    this.world.money += prod;
+    this.world.score += prod;
+    this.updateBadges();
   }
 
   onBuyDone(cout: number){
@@ -157,5 +176,92 @@ export class AppComponent {
         });
       });
   }
+
+  buyAngel(): void {
+    if (this.angelClaim < 1) return;
+
+    this.service
+      .deleteWorld()
+      .then(() => {
+        window.location.reload();
+      })
+      .catch(() => {
+        this.snackbar.open('An error as occured', '', {
+          duration: 4000,
+        });
+      });
+  }
+
+  buyAngelUpgrades(angelUpgrade: Pallier): void {
+    if (this.world.activeangels < angelUpgrade.seuil) {
+      return;
+    }
+
+    this.service.putAngelUpgrade(angelUpgrade).then(() => {
+      this.world.activeangels -= angelUpgrade.seuil;
+      this.updatePallier(angelUpgrade);
+    });
+  }
+
+  get angelClaim(): number {
+    let angels = Math.floor(
+      150 * Math.sqrt(this.world.score / Math.pow(10, 15)) -
+        this.world.totalangels
+    );
+    if (angels < 1) return 0;
+    else return angels;
+  }
+
+  private updatePallier(pallier: Pallier): void {
+    pallier.unlocked = true;
+    let products: Product[];
+    if (pallier.idcible > 0) {
+      this.productComponents.forEach((p) => {
+        if (p.product.id == pallier.idcible) products = [p.product];
+      });
+    } else if (pallier.idcible == 0) {
+      products = [];
+      this.productComponents.forEach((p) => {
+        products.push(p.product);
+      });
+    }
+    switch (pallier.typeratio) {
+      case 'gain':
+        for (let p of products) {
+          p.revenu = p.revenu * pallier.ratio;
+        }
+        break;
+      case 'vitesse':
+        for (let p of products) {
+          p.vitesse = p.vitesse / pallier.ratio;
+          p.timeleft = p.timeleft / p.timeleft;
+        }
+        break;
+      case 'ange':
+        this.world.angelbonus += pallier.ratio;
+        break;
+    }
+  }
+
+  private updateBadges(): void {
+    this.badgeManagers = 0;
+    for (let manager of this.world.managers.pallier) {
+      if (manager.seuil <= this.world.money && !manager.unlocked)
+        this.badgeManagers += 1;
+    }
+  
+    this.badgeUpgrades = 0;
+    for (let upgrade of this.world.upgrades.pallier) {
+      if (upgrade.seuil <= this.world.money && !upgrade.unlocked)
+        this.badgeUpgrades += 1;
+    }
+  
+    this.badgeAngels = 0;
+    for (let upgrade of this.world.angelupgrades.pallier) {
+      if (upgrade.seuil <= this.world.activeangels && !upgrade.unlocked)
+        this.badgeAngels += 1;
+    }
+  }
+  
 
 }
