@@ -9,11 +9,11 @@
     <mat-card-content>
 
         <div class="cout">
-            <span>{{product.cout}} $  </span>
+            <span>Revenu : {{product.revenu}} $  </span>
         </div>
 
         <div class="time">
-            <span> <mat-icon matSuffix>timer</mat-icon>  {{product.vitesse/1000}} sec </span>  <span *ngIf="product.timeleft  != 0">{{product.timeleft}}</span>
+            <span> <mat-icon matSuffix>timer</mat-icon>  {{product.vitesse/1000}} sec </span>  <span *ngIf="product.timeleft  != 0">{{product.timeleft/1000}}</span>
         </div>
         
         <div class="production">

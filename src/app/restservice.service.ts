@@ -7,7 +7,7 @@ import { World, Pallier, Product } from './world';
 })
 export class RestserviceService {
 
-  server = "http://localhost:8080/adventureisis/api/";
+  server = "http://localhost:8080/adventureisis/generic/";
   serverImg = "http://localhost:8080/icons/";
   user = "";
 
