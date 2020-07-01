@@ -3,7 +3,6 @@ import { RestserviceService } from './restservice.service';
 import { World, Product, Pallier } from './world';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProductComponent } from './product/product.component';
-import { log } from 'util';
 
 
 @Component({
@@ -17,8 +16,9 @@ export class AppComponent {
   world: World = new World();
   server: string;
   username : string;
+  serverImg: string;
 
-  qtmulti: string;
+  qtmulti: number = 1;
   qtmulti_value: string[] = ["x1", "x10", "x100", "Max"];
   qtmulti_pos: number = 0;
 
@@ -32,23 +32,19 @@ export class AppComponent {
   badgeUpgrades: number = 0;
   badgeAngels: number = 0;
 
-  @ViewChildren(ProductComponent) productComponents: QueryList<
-    ProductComponent
-  >;
+  @ViewChildren(ProductComponent) productComponents: QueryList<ProductComponent>;
   
-  @HostListener('window:keydown.esc') onKeyDown() {
-    this.showManagers = false;
-    this.showUnlocks = false;
-    this.showUpgrade = false;
-    this.showAngel = false;
-    this.showInvestors = false;
-  }
   constructor(private service: RestserviceService, private snackbar: MatSnackBar) {
-  
-   // localStorage.removeItem('username');
-    if (localStorage.getItem('username')) {
-      this.username = localStorage.getItem('username');
+    
+    this.server = service.server;
+    this.serverImg = service.serverImg;
+    
+    this.username = localStorage.getItem('username');
+    if(this.username == null) {
+      this.username = Math.floor(Math.random() * 1000000000).toString();
+      localStorage.setItem('username', this.username);
     }
+    
     this.onUsernameChanged();
 
     service.getWorld().then((world) => {
@@ -57,8 +53,8 @@ export class AppComponent {
     });
   }
 
-  ngOnInit(): void {
-    this.qtmulti = this.qtmulti_value[this.qtmulti_pos];
+  onStartProduction(p: Product): void {
+    this.service.putProduct(p);
   }
 
   onProductionDone(product: Product){
@@ -69,23 +65,50 @@ export class AppComponent {
     this.updateBadges();
   }
 
-  onBuyDone(cout: number){
-    // this.world.score += product.cout * product.quantite;
-    this.world.money -= cout;
-    this.calcBadgeManager();
-  }
-
-  calcBadgeManager(): void{
-    this.badgeManagers = this.world.managers.pallier.filter(p => p.seuil <= this.world.money && p.unlocked == false).length;
-  }
-  
-  qtmultiClick(){
-    this.qtmulti_pos++;
-    if(this.qtmulti_pos == this.qtmulti_value.length){
-      this.qtmulti_pos = 0;
+  calcQtMulti(): void {
+    switch (this.qtmulti) {
+      case 1:
+        this.qtmulti = 10;
+        break;
+      case 10:
+        this.qtmulti = 100;
+        break;
+      case 100:
+        this.qtmulti = 0;
+        break;
+      case 0:
+        this.qtmulti = 1;
+        break;
+      default:
+        this.qtmulti = 1;
     }
+  }
 
-    this.qtmulti = this.qtmulti_value[this.qtmulti_pos];
+  onBuy(obj: { amount: number; p: Product }): void {
+    if (this.world.money >= obj.amount) {
+      this.world.money -= obj.amount;
+      this.service.putProduct(obj.p);
+
+      let products = this.world.products.product;
+
+      // On récupère la quantité minimale de produits
+      let qttMini = products[0].quantite;
+      for (let i = 1; i < products.length - 1; i++) {
+        if (products[i].quantite < qttMini) {
+          qttMini = products[i].quantite;
+        }
+      }
+      for (let p of this.world.allunlocks.pallier) {
+        if (p.seuil < qttMini && !p.unlocked) {
+          this.productComponents.forEach((product) => product.calcUpgrade(p));
+          this.snackbar.open('You just unlocked ' + p.name, '', {
+            duration: 4000,
+          });
+        }
+      }
+
+      this.updateBadges();
+    }
   }
 
   hireManager(manager : Pallier){
@@ -93,8 +116,15 @@ export class AppComponent {
       this.world.money -= manager.seuil;
       manager.unlocked = true;
       this.world.products.product[manager.idcible-1].managerUnlocked = true;
+      this.snackbar.open(manager.name + ' a rejoint votre équipe', '', {
+        duration: 4000,
+      });
       this.popMessage(manager.name + " a été engagé !")
     }
+
+    this.service.putManager(manager).then((response) => {
+      console.log("Manager acheté !")
+    });
   }
 
   popMessage(message : string) : void {
@@ -102,23 +132,15 @@ export class AppComponent {
   }
 
   onUsernameChanged(): void {
-    if (this.username) {
-      localStorage.setItem('username', this.username);
-    }
-    this.service.setUser(this.username);
-
-
-    this.server = this.service.getServerImage();
-    this.service.getWorld().then(
-    world => {
-      console.log(this.world)
-    this.world = world;
-    });
-    
+    this.service.user = this.username;
   }
 
+  togleManager(): void {
+    this.showManagers;
+    this.showUnlocks;
+  }
 
-  nextUnlocks(product?: Product): Pallier {
+ nextUnlocks(product?: Product): Pallier {
     let pallier: Pallier[];
     if (product == null) {
       pallier = this.world.allunlocks.pallier;
@@ -138,43 +160,10 @@ export class AppComponent {
       return;
     }
 
-    this.service
-      .putUpgrade(upgrade)
-      .then(() => {
-        upgrade.unlocked = true;
-        let products: Product[];
-        if (upgrade.idcible > 0) {
-          this.productComponents.forEach((p) => {
-            if (p.product.id == upgrade.idcible) products = [p.product];
-          });
-        } else if (upgrade.idcible == 0){
-          products = [];
-          this.productComponents.forEach((p) => {
-            products.push(p.product);
-          });
-        }
-        switch (upgrade.typeratio.toLowerCase()) {
-          case 'gain':
-            for (let p of products) {
-              p.revenu = p.revenu * upgrade.ratio;
-            }
-            break;
-          case 'vitesse':
-            for (let p of products) {
-              p.vitesse = p.vitesse / upgrade.ratio;
-              p.timeleft = p.timeleft / p.timeleft;
-            }
-            break;
-          case 'ange':
-            break;
-        }
-        this.world.money -= upgrade.seuil;
-      })
-      .catch(() => {
-        this.snackbar.open('An error as occured', '', {
-          duration: 4000,
-        });
-      });
+    this.service.putUpgrade(upgrade).then(() => {
+      this.world.money -= upgrade.seuil;
+      this.updatePallier(upgrade);
+    });
   }
 
   buyAngel(): void {

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { Product, World } from '../world';
+import { Product, Pallier } from '../world';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { RestserviceService } from '../restservice.service';
 
 @Component({
@@ -9,78 +10,85 @@ import { RestserviceService } from '../restservice.service';
 })
 export class ProductComponent implements OnInit {
 
-  product: Product;
-  progressbarvalue: number = 0;
-  lastupdate: number = Date.now();
-  world: World = new World();
-  progressbar : any;
-  qteMaxCanBuy: number = 0;
-  private service: RestserviceService;
+  private __product: Product;
+  private __qtmulti: number;
+  private __money: number;
+  private __server: string;
+  private __activeAngels: number;
+  private __angelBonus: number;
+  private __serverImg: string;
 
-  private _server: string;
-  private _qtmulti: string;
-  private _money: number;
+  progressbarvalue = 0;
+  lastupdate: number;
 
-  private _activeAngels: number;
-  private _angelBonus: number;
-
-  constructor() { }
+  constructor(private service: RestserviceService, private snackbar: MatSnackBar) { }
 
   ngOnInit(): void {
-    setInterval(() => { this.calcScore(); }, 100);
-  }
-
-  @Input() 
-  set qtmulti(value: string) { 
-    this._qtmulti = value; 
-    if (this._qtmulti && this.product) this.calcMaxCanBuy(); 
-
-    if (this._qtmulti == "Max") {
-      this.qteMaxCanBuy = this.calcMaxCanBuy()
-    }else{
-      this.qteMaxCanBuy = 0
-    }
-  } 
-
-  @Input() 
-  set money(value: number) { 
-    this._money = value; 
+    setInterval(() => {
+      this.calcScore();
+      this.calcCanBuy();
+    }, 100);
   }
 
   @Input()
-  set prod(value: Product) {
-    this.product = value;
-    if (this.product && this.product.timeleft > 0) {
-      this.lastupdate = Date.now();
-      let progress = ((this.product.vitesse - this.product.timeleft) / this.product.vitesse) * 100;
-      console.log(progress)
-     
-      this.progressbar.set(progress);
-      this.progressbar.animate(1, { duration: this.product.timeleft });
-    }
+  set product(value: Product) {
+    this.__product = value;
+    this.lastupdate = Date.now();
+  }
+
+  get product(): Product {
+    return this.__product;
+  }
+
+  @Input() 
+  set qtmulti(value: number) {
+    this.__qtmulti = value;
+    if (this.__qtmulti && this.__product) this.calcMaxCanBuy();
+  }
+
+  get qtmulti(): number {
+    return this.__qtmulti;
+  }
+
+  @Input() 
+  set money(value: number) { 
+    this.__money = value; 
   }
 
   @Input()
   set server(value: string) {
-    this._server = value;
+    this.__server = value;
+  }
+
+  get server(): string {
+    return this.__server;
+  }
+
+  @Input()
+  set serverImg(value: string) {
+    this.__serverImg = value;
+  }
+
+  get serverImg(): string {
+    return this.__serverImg;
   }
 
   @Input()
   set activeAngels(value: number) {
-    this._activeAngels = value
+    this.__activeAngels = value
   }
 
   get activeAngels(): number {
-    return this._activeAngels;
+    return this.__activeAngels;
   }
 
   @Input()
   set angelBonus(value: number) {
-    this._angelBonus = value
+    this.__angelBonus = value
   }
 
   get angelBonus(): number {
-    return this._angelBonus
+    return this.__angelBonus
   }
 
   @Input()
@@ -88,104 +96,144 @@ export class ProductComponent implements OnInit {
     if (value) this.product.managerUnlocked = value;
   }
 
-  @Output() 
-  notifyProduction: EventEmitter<Product> = new EventEmitter<Product>();
-  
-  @Output() 
-  notifyBuy: EventEmitter<Number> = new EventEmitter<Number>();
-  
-  get server(): string {
-    return this._server;
-  }
+  @Output() startProduction: EventEmitter<Product> = new EventEmitter<Product>();
 
-  calcMaxCanBuy(): number {
-    var qte = Math.log(1-(this._money/this.product.cout*(1-this.product.croissance)))/Math.log(this.product.croissance);
-    return Math.floor(qte);
+  @Output() notifyProduction: EventEmitter<Product> = new EventEmitter<Product>();
+  
+  startFabrication(): void {
+    if (this.__product.timeleft > 0 || this.__product.quantite == 0) {
+      return;
+    }
+    this.__product.timeleft = this.__product.vitesse;
+    this.lastupdate = Date.now();
+    if (!this.__product.managerUnlocked) {
+      this.startProduction.emit(this.__product);
+    }
   }
 
   calcScore() {
-   // console.log(" derniere mise à jour "+this.lastupdate)
-   // console.log(" temps restant pour la prod "+this.product.timeleft)
-    if(!(this.product.timeleft == 0)) 
-    {
-      console.log(" derniere mise à jour on prod "+this.lastupdate)
-      console.log(" maintenant "+Date.now())
-      var tempsEcoule = Date.now() - this.lastupdate;
-      console.log(" tempsEcoule "+tempsEcoule)
-     
-      if(this.product.timeleft <= 0) 
-      {
-        this.product.timeleft = 0;
-        this.progressbarvalue = 0;
-        this.notifyProduction.emit(this.product);
-        if(this.product.managerUnlocked) 
-        {
-          this.startProduction()
+    if (this.__product.timeleft > 0) {
+      this.__product.timeleft =
+        this.__product.timeleft - (Date.now() - this.lastupdate);
+      this.lastupdate = Date.now();
+      if (this.__product.timeleft <= 0) {
+        if (this.__product.managerUnlocked) {
+          this.startFabrication();
+        } else {
+          this.__product.timeleft = 0;
+          this.progressbarvalue = 0;
         }
+        this.notifyProduction.emit(this.__product);
+      } else {
+        this.progressbarvalue =
+          ((this.__product.vitesse - this.__product.timeleft) /
+            this.__product.vitesse) *
+          100;
       }
-      else {
-        this.product.timeleft -= tempsEcoule;
-        console.log(this.product.timeleft)
-        this.progressbarvalue = ((this.product.vitesse - this.product.timeleft) / this.product.vitesse) * 100;
-      }
-    } 
-    else {
-      if(this.product.managerUnlocked){
-        this.startProduction();
-      }
+    } else if (this.__product.managerUnlocked) {
+      this.startFabrication();
     }
-
-    // on prévient le composant parent que ce produit a généré son revenu.
-    //this.notifyProduction.emit(this.product);
-
+    
   }
 
-  canBuy(): boolean {
-    switch(this._qtmulti){
-      case "x1":
-      case "Max":
-        return this.calcMaxCanBuy() >= 1;
-      case "x10": 
-        return this.calcMaxCanBuy() >= 10;
-      case "x100": 
-        return this.calcMaxCanBuy() >= 100;
+  calcCanBuy(): number {
+    let max = this.calcMaxCanBuy();
+    if (this.__qtmulti != 0) {
+      if (max >= this.__qtmulti) {
+        return this.__qtmulti;
+      }
+    } else {
+      if (max >= 1) {
+        return max;
+      }
     }
-  }
-
-  calcCout(qte: number): number{
-    return this.product.cout*(1-Math.pow(this.product.croissance, qte))/(1-this.product.croissance);
+    return 0;
   }
 
   buy(): void {
-    switch(this._qtmulti){
-      case "x1":
-        this.product.quantite += 1;
-        this.notifyBuy.emit(this.calcCout(1));
-        this.product.cout = this.product.cout * this.product.croissance;
+    let prix: number;
+    switch (this.__qtmulti) {
+      case 1:
+        prix = this.__product.cout;
+        this.__product.quantite += 1;
+        this.__product.cout = this.__product.cout * this.__product.croissance;
         break;
-      case "x10": 
-        this.product.quantite += 10;
-        this.notifyBuy.emit(this.calcCout(10));
-        this.product.cout = this.product.cout * Math.pow(this.product.croissance, 10);
+      case 10:
+        prix = this.getPrix(10);
+        this.__product.quantite += 10;
+        this.__product.cout =
+          this.__product.cout * this.__product.croissance ** 10;
         break;
-      case "x100": 
-        this.product.quantite += 100;
-        this.notifyBuy.emit(this.calcCout(100));
-        this.product.cout = this.product.cout * Math.pow(this.product.croissance, 100);
+      case 100:
+        prix = this.getPrix(100);
+        this.__product.quantite += 100;
+        this.__product.cout =
+          this.__product.cout * this.__product.croissance ** 100;
         break;
-      case "Max":
-          this.product.quantite += this.calcMaxCanBuy();
-          this.notifyBuy.emit(this.calcCout(this.calcMaxCanBuy()));
-          this.product.cout = this.product.cout * Math.pow(this.product.croissance, this.calcMaxCanBuy());
+      case 0:
+        let qtt = this.calcMaxCanBuy();
+        prix = this.getPrix(qtt);
+        this.__product.quantite += qtt;
+        this.__product.cout =
+          this.__product.cout * this.__product.croissance ** qtt;
         break;
     }
-     this.service.putProduct(this.product);
+    //this.onBuy.emit({ amount: prix, p: this.__product });
+
+    this.service.putProduct(this.__product).then(response => {
+      console.log(response)
+    })
+
+    this.__product.palliers.pallier.forEach((p) => {
+      if (!p.unlocked && p.seuil<=this.__product.quantite) {
+        this.calcUpgrade(p);
+        this.snackbar.open(
+          'You just unlocked the ' + this.__product.name + ' upgrade ' + p.name,
+          '',
+          {
+            duration: 4000,
+          }
+        );
+      }
+    });
   }
 
-  startProduction(){
-    if(this.product.quantite > 0){
-      this.product.timeleft = this.product.vitesse;
+  calcMaxCanBuy(): number {
+    return Math.floor(
+      Math.log(
+        -(
+          this.__money / this.__product.cout -
+          1 / (1 - this.__product.croissance)
+        ) *
+          (1 - this.__product.croissance)
+      ) / Math.log(this.__product.croissance)
+    );
+  }
+
+  getPrix(quantite: number) {
+    return (
+      (this.__product.cout * (1 - this.__product.croissance ** quantite)) /
+      (1 - this.__product.croissance)
+    );
+  }
+
+  calcUpgrade(p: Pallier): void {
+    // Si le seuil du pallier est dépassé, on met à jour le produit
+    if (p.seuil <= this.__product.quantite) {
+      switch (p.typeratio) {
+        case 'vitesse':
+          this.__product.vitesse = this.__product.vitesse / p.ratio;
+          this.__product.timeleft = this.__product.timeleft / p.ratio;
+          break;
+        case 'gain':
+          this.__product.revenu = this.__product.revenu * p.ratio;
+          break;
+      }
+      p.unlocked = true;
     }
   }
+
+  
+
 
 }

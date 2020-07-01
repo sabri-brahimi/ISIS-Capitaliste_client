@@ -27,15 +27,15 @@
 }
 
 .modal {
-    position: fixed;
+    position: absolute;
     z-index: 2; 
     width: 800px;
     height: 800px; 
     overflow: auto; 
     background-color: white; 
     border: solid;
-    top:10; 
-    left:20%; 
+    top:0px; 
+    left:calc(50% - 400px); 
 }
 
 .menu-item{

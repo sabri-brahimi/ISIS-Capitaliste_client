@@ -7,7 +7,7 @@ import { World, Pallier, Product } from './world';
 })
 export class RestserviceService {
 
-  server = "http://localhost:8080/adventureisis/generic/";
+  server = "http://localhost:8080/adventureisis/api/";
   serverImg = "http://localhost:8080/icons/";
   user = "";
 
@@ -41,7 +41,9 @@ export class RestserviceService {
   }
    
   putProduct(product: Product): Promise<Boolean> {
-    return this.http.put(this.server + "product", product).toPromise().catch(this.handleError);
+    return this.http.put(this.server + "product", product, {
+      headers: this.setHeaders(this.user),
+    }).toPromise().catch(this.handleError);
   }
 
   putManager(manager: Pallier): Promise<Response> {
@@ -64,7 +66,7 @@ export class RestserviceService {
 
   putAngelUpgrade(upgrade: Pallier): Promise<Response> {
     return this.http
-      .put(this.server + '/adventureisis/generic/angelupgrade', upgrade, {
+      .put(this.server + 'angelupgrade', upgrade, {
         headers: this.setHeaders(this.user),
       })
       .toPromise()
@@ -73,7 +75,7 @@ export class RestserviceService {
 
   deleteWorld(): Promise<Response> {
     return this.http
-      .delete(this.server + '/adventureisis/generic/world', {
+      .delete(this.server + 'world', {
         headers: this.setHeaders(this.user),
       })
       .toPromise()
