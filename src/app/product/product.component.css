@@ -17,3 +17,31 @@
    .lesdeux {
     position: relative;
    }
+
+  img{
+    background-size: cover;
+    width: 200px;
+    height: 200px;
+    margin-left: 120px ;
+  }
+
+  button{
+    padding: 0;
+    margin-left: 120px;
+  }
+
+  .buy,.quantitecalcule,.prix{
+    float:right;
+    margin: 15px;
+    padding: 0;
+  }
+
+  .product{
+    border-width : 3px;
+    border-style: solid;
+    border-color : gray;
+  }
+
+  .pQuantite{
+    float: right;
+  }

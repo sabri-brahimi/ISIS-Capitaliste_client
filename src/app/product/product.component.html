@@ -1,7 +1,7 @@
 <div class="product">
     <mat-card-header>
         <mat-card-title>{{product.name}}</mat-card-title>
-        <mat-card-subtitle>Quantité:  {{product.quantite}}</mat-card-subtitle>
+        <mat-card-subtitle class="pQuantite">Quantité:  {{product.quantite}}</mat-card-subtitle>
     </mat-card-header>
 
     <img [attr.src]="serverImg+product.logo" (click)="startFabrication()" width="250px" />
@@ -24,14 +24,10 @@
 
     <mat-card-actions>
         <button mat-flat-button color="primary" [disabled]="calcCanBuy()==0" (click)="buy()">
-            <div class="achat">
-                <div>
-                    Buy <br/>
-                    {{ calcCanBuy()>0 ? "x"+calcCanBuy() : (qtmulti==0 ? 1 : qtmulti) }}
-                </div>
-                <div [innerHTML]="getPrix(calcCanBuy()>0 ? calcCanBuy() : (qtmulti==0 ? 1 : qtmulti)) | bigvalue"></div>
-            </div>
-        </button>
+            <p class="prix" [innerHTML]="getPrix(calcCanBuy()>0 ? calcCanBuy() : (qtmulti==0 ? 1 : qtmulti)) | bigvalue"></p>
+            <p class= "quantitecalcule">{{ calcCanBuy()>0 ? "x"+calcCanBuy() : (qtmulti==0 ? 1 : qtmulti) }}</p>
+            <p class="buy">Buy</p>
+            </button>
     </mat-card-actions>
 
 </div>
