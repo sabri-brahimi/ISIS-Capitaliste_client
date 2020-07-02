@@ -9,7 +9,7 @@
     <mat-card-content>
 
         <div class="cout">
-            <span>Revenu : {{product.revenu}} $  </span>
+           Revenu:  <span [innerHTML]="product.revenu * product.quantite * (1 + (activeAngels * angelBonus) / 100) | bigvalue"></span> $
         </div>
 
         <div class="time">
@@ -18,7 +18,6 @@
         
         <div class="production">
             <mat-progress-bar [value]="progressbarvalue" ></mat-progress-bar>
-            <p [innerHTML]="product.revenu * product.quantite * (1 + (activeAngels * angelBonus) / 100) | bigvalue"></p>
         </div>
     </mat-card-content>
 

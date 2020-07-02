@@ -39,9 +39,13 @@ export class AppComponent {
     this.server = service.server;
     this.serverImg = service.serverImg;
     
-    this.username = localStorage.getItem('username');
+   
     if(this.username == null) {
-      this.username = Math.floor(Math.random() * 1000000000).toString();
+      this.username = localStorage.getItem('username');
+      if(this.username == null) {
+        this.username = Math.floor(Math.random() * 1000000000).toString();
+      }
+      
       localStorage.setItem('username', this.username);
     }
     
@@ -62,6 +66,7 @@ export class AppComponent {
     prod += prod * ((1 + this.world.activeangels * this.world.angelbonus) / 100);
     this.world.money += prod;
     this.world.score += prod;
+    this.service.putProduct(product);
     this.updateBadges();
   }
 
@@ -128,11 +133,12 @@ export class AppComponent {
   }
 
   popMessage(message : string) : void {
-    this.snackbar.open(message, "", { duration : 2000 })
+    this.snackbar.open(message, "", { duration : 3000 })
   }
 
   onUsernameChanged(): void {
     this.service.user = this.username;
+    localStorage.setItem('username', this.username);
   }
 
   togleManager(): void {

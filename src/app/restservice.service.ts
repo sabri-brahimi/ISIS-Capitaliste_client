@@ -41,6 +41,7 @@ export class RestserviceService {
   }
    
   putProduct(product: Product): Promise<Boolean> {
+
     return this.http.put(this.server + "product", product, {
       headers: this.setHeaders(this.user),
     }).toPromise().catch(this.handleError);

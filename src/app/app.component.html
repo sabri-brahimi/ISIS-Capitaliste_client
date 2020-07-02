@@ -88,52 +88,72 @@
         <div>
             <div class="logo"><img class="round" [attr.src]="serverImg+manager.logo" /> 
             <div class="managername"> {{ manager.name}} 
-            <div class="managercible"> {{ world.products.product[manager.idcible-1].name }} 
-            <div class="managercost"> {{ manager.seuil}} 
+            <div class="managercible">Producteur de : {{ world.products.product[manager.idcible-1].name }} 
+            <div class="managercost"> Seuil : {{ manager.seuil}} 
               <div>
                 <button class="hirebutton" mat-raisedbutton (click)="hireManager(manager)"
-                  [ngClass]="{'selectable' : (world.money >= manager.seuil)}">Hire !
+                color="primary"
+                [disabled]="manager.seuil > world.money"
+                  [ngClass]="{'selectable' : (world.money >= manager.seuil)}">Engager !
                 </button>
               </div>
-              <button class="closebutton" mat-raisedbutton color="primary" (click)="showManagers = !showManagers">Fermer</button>
               </div>
               </div></div></div></div></div>
-        </div>     
+        </div> 
+        <button class="closebutton"                style="position: fixed;
+        top: 646px;" mat-raisedbutton color="primary" (click)="showManagers = !showManagers">Fermer</button>    
       </div>
    
 
 
 
-  <div class="modal" *ngIf="showUnlocks">
-    <h1>Débloquer le potentiel maximal</h1>
+  <div class="modal" *ngIf="showUnlocks" style="height: 700px;">
+    <h1 style="color:orange;margin: auto">Débloquer le potentiel maximal</h1>
     <ng-container *ngFor="let product of world.products.product">
       <ng-container *ngFor="let p of [nextUnlocks(product)];">
+
         <div *ngIf="p!=null" class="modal-layout">
+            <div class="card">
+                <img [attr.src]="serverImg+p.logo" alt="Avatar" style="width:100%">
+                <div class="container">
+                  <h4><b> {{p.typeratio}} x {{ p.ratio }} Seuil :  {{ p.seuil }}</b></h4> 
+                  <p>Pour  le produit : {{ product.name }}</p> 
+                </div>
+              </div>
+<!--
           <div class="logo"><img [attr.src]="serverImg+p.logo"></div>
           <div class="modal-text">
             <p>{{ p.name }}</p>
             <p>{{ product.name }} {{ p.typeratio }} x{{ p.ratio }}</p>
           </div>
+-->
         </div>
       </ng-container>
+      <br>
     </ng-container>
-      <ng-container *ngFor="let p of [nextUnlocks()];">
-        <div *ngIf="p!=null" class="modal-layout">
-          <div class="logo"><img [attr.src]="serverImg+p.logo"></div>
-          <div class="modal-text">
-            <p>{{ p.name }}</p>
-            <p>L'univers {{ p.typeratio }} x{{ p.ratio }}</p>
-          </div>
-        </div>
-      </ng-container>
-      <button class="close-button" mat-button (click)="showUnlocks=false">Fermer</button>
+
+      <button style="position: fixed;
+      top: 646px;" class="close-button" mat-button (click)="showUnlocks=false">Fermer</button>
   </div>
 
-  <div *ngIf="showUpgrade" class="modal">
+  <div *ngIf="showUpgrade" class="modal" style="height: 700px;">
     <h1>Amélioration au niveau suivant</h1>
     <div *ngFor="let upgrade of world.upgrades.pallier">
       <div *ngIf="!upgrade.unlocked" class="modal-layout">
-        <div class="logo"><img [attr.src]="serverImg+upgrade.logo"></div>
+          <div class="card">
+              <img [attr.src]="serverImg+upgrade.logo" alt="Avatar" style="width:100%">
+              <div class="container">
+                <h4><b>{{ upgrade.name}}</b></h4> 
+           <!--     <p>{{ world.products.product[upgrade.idcible-1].name }}</p>-->
+                <p>Seuil : {{ upgrade.seuil }}</p>
+                <button [disabled]="!(world.money>=upgrade.seuil)" (click)="buyUpgrade(upgrade)" mat-raised-button
+                    color="primary">Acheter</button>
+              </div>
+            </div>
+            <br>
+
+<!--
+          <div class="logo"><img [attr.src]="serverImg+upgrade.logo"></div>
         <div class="modal-text">
           <p>{{ upgrade.name}}</p>
           <p>{{ world.products.product[upgrade.idcible-1].name }}</p>
@@ -141,13 +161,15 @@
         </div>
         <button [disabled]="!(world.money>=upgrade.seuil)" (click)="buyUpgrade(upgrade)" mat-raised-button
           color="primary">Engager</button>
+-->
       </div>
     </div>
-    <button class="close-button" mat-button (click)="showUpgrade=false">Fermer</button>
+    <button style="position: fixed;
+    top: 646px;"  class="close-button" mat-button (click)="showUpgrade=false">Fermer</button>
   </div>
 
   <div class="modal" *ngIf="showAngel">
-    <h1 class="titleAngel">Upgrade your angels to the next level !</h1>
+    <h1 class="titleAngel">Upgrade angels</h1>
     <div *ngFor="let upgrade of world.angelupgrades.pallier">
       <div *ngIf="!upgrade.unlocked" class="modal-layout">
         <div class="logo"><img [attr.src]="serverImg+upgrade.logo"></div>
