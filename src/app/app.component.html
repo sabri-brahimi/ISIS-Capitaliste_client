@@ -168,7 +168,7 @@
     top: 646px;"  class="close-button" mat-button (click)="showUpgrade=false">Close</button>
   </div>
 
-  <div class="modal" *ngIf="showAngel">
+  <div class="modal" *ngIf="showAngel" style="height: 700px;">
     <h1 class="titleAngel">Upgrade angels</h1>
     <div *ngFor="let upgrade of world.angelupgrades.pallier">
       <div *ngIf="!upgrade.unlocked" class="modal-layout">

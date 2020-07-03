@@ -177,6 +177,7 @@ export class AppComponent {
     }
 
     this.service.putUpgrade(upgrade).then(() => {
+      
       this.world.money -= upgrade.seuil;
       this.updatePallier(upgrade);
     });
@@ -246,6 +247,18 @@ export class AppComponent {
         this.world.angelbonus += pallier.ratio;
         break;
     }
+
+    this.service
+    .putUpgrade(pallier)
+    .then(() => {
+      console.log("okay")
+    })
+    .catch(() => {
+      this.snackbar.open('An error as occured', '', {
+        duration: 4000,
+      });
+    });
+
   }
 
   private updateBadges(): void {

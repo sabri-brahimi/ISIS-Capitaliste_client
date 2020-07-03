@@ -57,6 +57,7 @@ export class RestserviceService {
   }
 
   putUpgrade(upgrade: Pallier): Promise<Response> {
+    console.log("upgrate ")
     return this.http
       .put(this.server + 'upgrade', upgrade, {
         headers: this.setHeaders(this.user),
