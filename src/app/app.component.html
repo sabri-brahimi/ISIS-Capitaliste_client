@@ -79,7 +79,7 @@
 
 
 
-  <div *ngIf="showManagers" class="modal">
+  <div *ngIf="showManagers" class="modal" style="height: 700px;">
     <div>
       <h1 class="titre">Hire managers</h1>
     </div>
@@ -168,7 +168,7 @@
     top: 646px;"  class="close-button" mat-button (click)="showUpgrade=false">Close</button>
   </div>
 
-  <div class="modal" *ngIf="showAngel">
+  <div class="modal" *ngIf="showAngel" style="height: 700px;">
     <h1 class="titleAngel">Upgrade angels</h1>
     <div *ngFor="let upgrade of world.angelupgrades.pallier">
       <div *ngIf="!upgrade.unlocked" class="modal-layout">
@@ -196,7 +196,7 @@
     <button class="close-button" (click)="showAngel=false">Fermer</button>
   </div>
 
-  <div class="modal" *ngIf="showInvestors">
+  <div class="modal" *ngIf="showInvestors" style="height: 700px;">
     <h1 class="titleInvestors">Your best angelic friends</h1>
     <div class="modal-text">
       <p>{{ world.activeangels }} Total Angels</p>
