@@ -12,7 +12,7 @@
     </div>
 
     <mat-form-field class="example-form-field">
-      <mat-label>Identifiant</mat-label>
+      <mat-label>Username</mat-label>
       <input matInput type="text" [(ngModel)]="username" (change)="onUsernameChanged()">
     </mat-form-field>
 
@@ -81,34 +81,34 @@
 
   <div *ngIf="showManagers" class="modal">
     <div>
-      <h1 class="titre">Engager des manager</h1>
+      <h1 class="titre">Hire managers</h1>
     </div>
     <div *ngFor="let manager of world.managers.pallier">
       <div *ngIf="!manager.unlocked" class="managerslayout">
         <div>
             <div class="logo"><img class="round" [attr.src]="serverImg+manager.logo" /> 
             <div class="managername"> {{ manager.name}} 
-            <div class="managercible">Producteur de : {{ world.products.product[manager.idcible-1].name }} 
-            <div class="managercost"> Seuil : {{ manager.seuil}} 
+            <div class="managercible">Producer of : {{ world.products.product[manager.idcible-1].name }} 
+            <div class="managercost"> Threshold : {{ manager.seuil}} 
               <div>
                 <button class="hirebutton" mat-raisedbutton (click)="hireManager(manager)"
                 color="primary"
                 [disabled]="manager.seuil > world.money"
-                  [ngClass]="{'selectable' : (world.money >= manager.seuil)}">Engager !
+                  [ngClass]="{'selectable' : (world.money >= manager.seuil)}">Hire !
                 </button>
               </div>
               </div>
               </div></div></div></div></div>
         </div> 
         <button class="closebutton"                style="position: fixed;
-        top: 646px;" mat-raisedbutton color="primary" (click)="showManagers = !showManagers">Fermer</button>    
+        top: 646px;" mat-raisedbutton color="primary" (click)="showManagers = !showManagers">Close</button>    
       </div>
    
 
 
 
   <div class="modal" *ngIf="showUnlocks" style="height: 700px;">
-    <h1 style="color:orange;margin: auto">Débloquer le potentiel maximal</h1>
+    <h1 class="titleUnlock">Unlock maximum potential</h1>
     <ng-container *ngFor="let product of world.products.product">
       <ng-container *ngFor="let p of [nextUnlocks(product)];">
 
@@ -116,8 +116,8 @@
             <div class="card">
                 <img [attr.src]="serverImg+p.logo" alt="Avatar" style="width:100%">
                 <div class="container">
-                  <h4><b> {{p.typeratio}} x {{ p.ratio }} Seuil :  {{ p.seuil }}</b></h4> 
-                  <p>Pour  le produit : {{ product.name }}</p> 
+                  <h4><b> {{p.typeratio}} x {{ p.ratio }} Threshold :  {{ p.seuil }}</b></h4> 
+                  <p>For the product : {{ product.name }}</p> 
                 </div>
               </div>
 <!--
@@ -133,11 +133,11 @@
     </ng-container>
 
       <button style="position: fixed;
-      top: 646px;" class="close-button" mat-button (click)="showUnlocks=false">Fermer</button>
+      top: 646px;" class="close-button" mat-button (click)="showUnlocks=false">Close</button>
   </div>
 
   <div *ngIf="showUpgrade" class="modal" style="height: 700px;">
-    <h1>Amélioration au niveau suivant</h1>
+    <h1 class="titleUpgrade"> Upgrading to the next level</h1>
     <div *ngFor="let upgrade of world.upgrades.pallier">
       <div *ngIf="!upgrade.unlocked" class="modal-layout">
           <div class="card">
@@ -145,9 +145,9 @@
               <div class="container">
                 <h4><b>{{ upgrade.name}}</b></h4> 
            <!--     <p>{{ world.products.product[upgrade.idcible-1].name }}</p>-->
-                <p>Seuil : {{ upgrade.seuil }}</p>
+                <p>Threshold : {{ upgrade.seuil }}</p>
                 <button [disabled]="!(world.money>=upgrade.seuil)" (click)="buyUpgrade(upgrade)" mat-raised-button
-                    color="primary">Acheter</button>
+                    color="primary">Buy</button>
               </div>
             </div>
             <br>
@@ -165,7 +165,7 @@
       </div>
     </div>
     <button style="position: fixed;
-    top: 646px;"  class="close-button" mat-button (click)="showUpgrade=false">Fermer</button>
+    top: 646px;"  class="close-button" mat-button (click)="showUpgrade=false">Close</button>
   </div>
 
   <div class="modal" *ngIf="showAngel">
@@ -180,7 +180,7 @@
               {{ world.products.product[upgrade.idcible-1].name }} {{ upgrade.typeratio }} x{{ upgrade.ratio }}
             </ng-container>
             <ng-container *ngIf="upgrade.idcible==0">
-              All the universe {{ upgrade.typeratio }} x{{ upgrade.ratio }}
+              All worlds {{ upgrade.typeratio }} x{{ upgrade.ratio }}
             </ng-container>
             <ng-container *ngIf="upgrade.idcible==-1">
               Angels bonus +{{ upgrade.ratio }}%
@@ -193,7 +193,7 @@
           color="primary">Buy !</button>
       </div>
     </div>
-    <button class="close-button" mat-button (click)="showAngel=false">Fermer</button>
+    <button class="close-button" (click)="showAngel=false">Fermer</button>
   </div>
 
   <div class="modal" *ngIf="showInvestors">
@@ -207,7 +207,7 @@
       <button [disabled]="angelClaim<1" (click)="buyAngel()" mat-raised-button color="primary">{{ angelClaim }}
         angels<br />To Claim with a Restart</button>
     </div>
-    <button class="close-buttonInvestor" (click)="showInvestors=false">Fermer</button>
+    <button class="close-buttonInvestor" (click)="showInvestors=false">Close</button>
   </div>
 
 </div>

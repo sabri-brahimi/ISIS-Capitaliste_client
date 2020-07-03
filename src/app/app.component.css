@@ -111,6 +111,16 @@
       background-color: gray;
   }
 
+  .titleUpgrade{
+    text-align: center;
+    background-color: gray;
+  }
+
+  .titleUnlock{
+    text-align: center;
+    background-color: gray;
+  }
+  
   .close-buttonInvestor{
     margin-top :20px;
   }

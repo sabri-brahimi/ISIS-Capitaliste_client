@@ -1,7 +1,7 @@
 <div class="product">
     <mat-card-header>
         <mat-card-title>{{product.name}}</mat-card-title>
-        <mat-card-subtitle class="pQuantite">Quantité:  {{product.quantite}}</mat-card-subtitle>
+        <mat-card-subtitle class="pQuantite">Quantity:  {{product.quantite}}</mat-card-subtitle>
     </mat-card-header>
 
     <img [attr.src]="serverImg+product.logo" (click)="startFabrication()" width="250px" />
@@ -9,7 +9,7 @@
     <mat-card-content>
 
         <div class="cout">
-           Revenu:  <span [innerHTML]="product.revenu * product.quantite * (1 + (activeAngels * angelBonus) / 100) | bigvalue"></span> $
+           Income:  <span [innerHTML]="product.revenu * product.quantite * (1 + (activeAngels * angelBonus) / 100) | bigvalue"></span> $
         </div>
 
         <div class="time">
