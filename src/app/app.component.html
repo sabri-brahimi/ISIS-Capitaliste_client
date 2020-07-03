@@ -191,8 +191,9 @@
         <button class="buyAngel" [disabled]="!(world.activeangels>=upgrade.seuil)" (click)="buyAngelUpgrades(upgrade)" mat-raised-button
           color="primary">Buy !</button>
       </div>
-    </div> 
-    <button class="closebutton" style="position: fixed; top: 646px;" mat-raisedbutton color="primary" (click)="showManagers = !showManagers">Close</button>    
+    </div>
+    <button style="position: fixed;
+    top: 646px;"  class="close-button" (click)="showAngel=false">Close</button>
   </div>
 
   <div class="modal" *ngIf="showInvestors" style="height: 700px;">
