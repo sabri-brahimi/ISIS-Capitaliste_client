@@ -27,6 +27,7 @@ export class ProductComponent implements OnInit {
     setInterval(() => {
       this.calcScore();
       this.calcCanBuy();
+
     }, 100);
   }
 
@@ -99,6 +100,8 @@ export class ProductComponent implements OnInit {
   @Output() startProduction: EventEmitter<Product> = new EventEmitter<Product>();
 
   @Output() notifyProduction: EventEmitter<Product> = new EventEmitter<Product>();
+
+  @Output() notifyBuy: EventEmitter<any> = new EventEmitter<Product>();
   
   startFabrication(): void {
     if (this.__product.timeleft > 0 || this.__product.quantite == 0) {
@@ -178,7 +181,7 @@ export class ProductComponent implements OnInit {
           this.__product.cout * this.__product.croissance ** qtt;
         break;
     }
-    //this.onBuy.emit({ amount: prix, p: this.__product });
+    this.notifyBuy.emit({ amount: prix, p: this.__product });
 
     this.service.putProduct(this.__product).then(response => {
       console.log(response)

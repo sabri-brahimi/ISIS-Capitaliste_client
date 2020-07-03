@@ -57,6 +57,8 @@ export class AppComponent {
     });
   }
 
+ 
+
   onStartProduction(p: Product): void {
     this.service.putProduct(p);
   }
@@ -90,6 +92,7 @@ export class AppComponent {
   }
 
   onBuy(obj: { amount: number; p: Product }): void {
+    console.log("on achete "+ obj.amount)
     if (this.world.money >= obj.amount) {
       this.world.money -= obj.amount;
       this.service.putProduct(obj.p);
@@ -113,6 +116,13 @@ export class AppComponent {
       }
 
       this.updateBadges();
+      this.service.getWorld().then((world) => {
+        console.log("monde mise à jour")
+        this.world = world;
+        this.updateBadges();
+      })
+
+
     }
   }
 
@@ -126,10 +136,10 @@ export class AppComponent {
       });
       this.popMessage(manager.name + " a été engagé !")
     }
-
     this.service.putManager(manager).then((response) => {
       console.log("Manager acheté !")
     });
+
   }
 
   popMessage(message : string) : void {
