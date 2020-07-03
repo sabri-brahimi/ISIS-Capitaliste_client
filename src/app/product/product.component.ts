@@ -161,21 +161,18 @@ export class ProductComponent implements OnInit {
       case 10:
         prix = this.getPrix(10);
         this.__product.quantite += 10;
-        this.__product.cout =
-          this.__product.cout * this.__product.croissance ** 10;
+        this.__product.cout = this.__product.cout * this.__product.croissance ** 10;
         break;
       case 100:
         prix = this.getPrix(100);
         this.__product.quantite += 100;
-        this.__product.cout =
-          this.__product.cout * this.__product.croissance ** 100;
+        this.__product.cout = this.__product.cout * this.__product.croissance ** 100;
         break;
       case 0:
         let qtt = this.calcMaxCanBuy();
         prix = this.getPrix(qtt);
         this.__product.quantite += qtt;
-        this.__product.cout =
-          this.__product.cout * this.__product.croissance ** qtt;
+        this.__product.cout = this.__product.cout * this.__product.croissance ** qtt;
         break;
     }
     //this.onBuy.emit({ amount: prix, p: this.__product });
