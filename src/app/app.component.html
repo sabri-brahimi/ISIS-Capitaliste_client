@@ -79,7 +79,7 @@
 
 
 
-  <div *ngIf="showManagers" class="modal">
+  <div *ngIf="showManagers" class="modal" style="height: 700px;">
     <div>
       <h1 class="titre">Hire managers</h1>
     </div>
@@ -100,8 +100,7 @@
               </div>
               </div></div></div></div></div>
         </div> 
-        <button class="closebutton"                style="position: fixed;
-        top: 646px;" mat-raisedbutton color="primary" (click)="showManagers = !showManagers">Close</button>    
+        <button class="closebutton" style="position: fixed; top: 646px;" mat-raisedbutton color="primary" (click)="showManagers = !showManagers">Close</button>    
       </div>
    
 
@@ -133,7 +132,7 @@
     </ng-container>
 
       <button style="position: fixed;
-      top: 646px;" class="close-button" mat-button (click)="showUnlocks=false">Close</button>
+      top: 646px;" class="close-button" (click)="showUnlocks=false">Close</button>
   </div>
 
   <div *ngIf="showUpgrade" class="modal" style="height: 700px;">
@@ -165,7 +164,7 @@
       </div>
     </div>
     <button style="position: fixed;
-    top: 646px;"  class="close-button" mat-button (click)="showUpgrade=false">Close</button>
+    top: 646px;"  class="close-button" (click)="showUpgrade=false">Close</button>
   </div>
 
   <div class="modal" *ngIf="showAngel" style="height: 700px;">
@@ -193,10 +192,11 @@
           color="primary">Buy !</button>
       </div>
     </div>
-    <button class="close-button" (click)="showAngel=false">Fermer</button>
+    <button style="position: fixed;
+    top: 646px;"  class="close-button" (click)="showAngel=false">Close</button>
   </div>
 
-  <div class="modal" *ngIf="showInvestors">
+  <div class="modal" *ngIf="showInvestors" style="height: 700px;">
     <h1 class="titleInvestors">Your best angelic friends</h1>
     <div class="modal-text">
       <p>{{ world.activeangels }} Total Angels</p>
